@@ -4,18 +4,18 @@ const BASE_URL = 'https://pixabay.com/api/';
 
 export const searchPhotos = async q => {
   const options = {
-    key: KEY,
-    q,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
   };
 
   try {
-    const res = await axios.get(`${BASE_URL}`, options);
-    console.log(res);
+    const res = await axios.get(
+      `${BASE_URL}/?key=${KEY}&q=${q}&image_type='photo'&orientation='horizontal'&safesearch='true'`
+    );
+
+    return res.data;
   } catch (error) {
     console.log(error);
   }
-  return res;
 };
