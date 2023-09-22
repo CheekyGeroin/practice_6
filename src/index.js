@@ -5,7 +5,11 @@ import { searchPhotos } from './js/api-service';
 const refs = {
   form: document.querySelector('.search-form'),
   gallery: document.querySelector('.gallery'),
+  loadMoreBtn: document.querySelector('.load-more'),
 };
+
+let page = 1;
+refs.loadMoreBtn.classList.add('is-hide');
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
@@ -23,6 +27,7 @@ const createMarkup = markup => {
   } else {
     Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
   }
+  page += 1;
   const arr = hits;
   return arr.map(item => {
     const {
@@ -62,6 +67,13 @@ const createMarkup = markup => {
 
 const addResult = markup => {
   refs.gallery.insertAdjacentHTML('beforeend', markup);
+  refs.loadMoreBtn.classList.remove('is-hide');
+};
+const fetchPhoto = (searchQuery, page) => {
+  searchPhotos(searchQuery, page)
+    .then(createMarkup)
+    .then(addResult)
+    .catch(error => console.log(error));
 };
 
 const submitItem = e => {
@@ -70,10 +82,7 @@ const submitItem = e => {
   const searchQuery = e.target.searchQuery.value.toLowerCase().trim();
 
   if (searchQuery !== '') {
-    searchPhotos(searchQuery)
-      .then(createMarkup)
-      .then(addResult)
-      .catch(error => console.log(error));
+    fetchPhoto(searchQuery, page);
   }
 };
 
