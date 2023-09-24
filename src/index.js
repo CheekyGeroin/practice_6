@@ -9,6 +9,7 @@ const refs = {
 };
 
 let page = 1;
+let searchQuery = ' ';
 refs.loadMoreBtn.classList.add('is-hide');
 
 const lightbox = new SimpleLightbox('.gallery a', {
@@ -78,12 +79,23 @@ const fetchPhoto = (searchQuery, page) => {
 
 const submitItem = e => {
   e.preventDefault();
-
-  const searchQuery = e.target.searchQuery.value.toLowerCase().trim();
+  const inputValue = e.target.searchQuery.value.toLowerCase().trim();
+  if (searchQuery !== inputValue) {
+    searchQuery = inputValue;
+    page = 1;
+    refs.gallery.innerHTML = ' ';
+  }
 
   if (searchQuery !== '') {
     fetchPhoto(searchQuery, page);
+    page += 1;
   }
 };
 
+const onLoadMorePhotos = e => {
+  fetchPhoto(searchQuery, page);
+  page += 1;
+};
+
+refs.loadMoreBtn.addEventListener('click', onLoadMorePhotos);
 refs.form.addEventListener('submit', submitItem);
